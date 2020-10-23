@@ -1,292 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Frontend Library demonstration - WhatIsMyBrowser.com</title>
-        <meta name="description" content="A simple page to demonstrate the frontend detection library" />
-        
 
-        <!-- Load the WhatIsMyBrowser.com Frontend Library -->
-        
-        <script src="/javascripts/whatismybrowser.js"></script>
-        
+<head>
+    <title>Frontend Library demonstration - WhatIsMyBrowser.com</title>
+    <meta name="description" content="check if we can set session storage" />
 
+    <style>
+        a {
+            color: #508db4;
+        }
 
-        <!-- Meta tags -->
-        <meta charset="utf-8">
-        <link rel="canonical" href="https://developers.whatismybrowser.com/detection/frontend-library/v1/demo/" />
+        /* a quick reset on the IP address ul */
+        #localips-detection ul,
+        #localips-detection li {
+            padding-left: 0;
+            list-style-position: inside;
+            margin: 0;
+        }
+    </style>
 
-        <!-- Favicon -->
-        <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/static/main/images/apple-touch-icon.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/static/main/images/apple-touch-icon.png" />
+</head>
 
-        <style>
-            a {
-                color: #508db4;
-            }
-            /* a quick reset on the IP address ul */
-            #localips-detection ul,
-            #localips-detection li {
-                padding-left: 0;
-                list-style-position: inside;
-                margin: 0;
-            }
-        </style>
+<body>
+    <div id="result"></div>
 
-    </head>
-    <body>
+</body>
 
-        <h1>Frontend detection library demonstration</h1>
+<script>
+    sessionStorage.setItem("timeStamp", Date.now());
+    console.log(sessionStorage.getItem("timeStamp"))
+    document.getElementById("result").innerHTML = sessionStorage.getItem("lastname");
 
-        <p>This is a very simple page which demonstrates using the <a href="/detection/frontend-library/v1/">Frontend Library</a> from WhatIsMyBrowser.com.</p>
+</script>
+</body>
 
-        <p>For detailed instructions on using the frontend library, please refer to the <a href="/detection/frontend-library/v1/integration-guide/">Integration Guide</a>.</p>
-
-        <table id="detection-results" border="2" cellpadding="2" width="400">
-            <tr>
-                <th>Javascript</th>
-                <td id="javascript-detection">No</td>
-            </tr>
-
-            <tr>
-                <th>Cookies</th>
-                <td id="cookies-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Third-Party Cookies</th>
-                <td id="third-party-cookies-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Adobe Flash</th>
-                <td id="flash-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Adobe Flash Version</th>
-                <td id="flash-version-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Java</th>
-                <td id="java-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Java Version</th>
-                <td id="javaversion-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Screen Size</th>
-                <td id="screensize-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Screen Color Depth</th>
-                <td id="screencolordepth-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Screen Device Pixel Ratio</th>
-                <td id="screendevicepixelratio-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Browser window size</th>
-                <td id="browserwindowsize-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Browser view port size</th>
-                <td id="browserviewportsize-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>Local IP address/es</th>
-                <td id="localips-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>GMT Offset</th>
-                <td id="gmtoffset-detection">JavaScript required...</td>
-            </tr>
-
-            <tr>
-                <th>AdBlocker</th>
-                <td id="adblock-detection">JavaScript required...</td>
-            </tr>
-
-        </table>
-
-        <p>Software Library version: <span id="library-version"></span></p>
-
-        <script>
-
-            // JAVASCRIPT
-            if (WIMB.detect.javascript.enabled() === true) {
-                document.getElementById("javascript-detection").innerHTML = "Yes";
-            }
-            else {
-                document.getElementById("javascript-detection").innerHTML = "No";
-            }
-
-            // COOKIES
-            if (WIMB.detect.cookies.enabled() === true) {
-                document.getElementById("cookies-detection").innerHTML = "Yes";
-            }
-            else {
-                document.getElementById("cookies-detection").innerHTML = "No";
-            }
-
-            // THIRD-PARTY COOKIES
-            document.getElementById("third-party-cookies-detection").innerHTML = "Please wait...";
-            // -- First, trigger a whatismybrowser.com server to set a third-party cookie...
-            WIMB.detect.cookies_third_party.trigger_set_cookie()
-            
-            // -- Second, soon after, check if that cookie was set.
-            // check every 50 milliseconds until one is found or 5000 milliseconds (5 seconds) elapses.
-            cookie_check_interval = setInterval(function() {
-              if (WIMB.detect.cookies_third_party.enabled() == true) {
-                document.getElementById("third-party-cookies-detection").innerHTML = "Yes";
-                // -- and stop checking if that cookie exists
-                clearInterval(cookie_check_interval);
-              }
-              else if (WIMB.detect.cookies_third_party.enabled() == false) {
-                document.getElementById("third-party-cookies-detection").innerHTML = "No";
-                // -- and stop checking if that cookie exists
-                  clearInterval(cookie_check_interval);
-              }
-            }, 50);
-            setTimeout(function() {
-                // -- after 5000 milliseconds, check if the check returned a result
-                if (window.wimb.data.cookies_third_party == "unknown") {
-                    // The check has timed out
-                    document.getElementById("third-party-cookies-detection").innerHTML = "Error. Try reloading.";
-                }
-                clearInterval(cookie_check_interval);
-            }, 5000);
-
-            // FLASH DETECTION
-            if (WIMB.detect.flash.enabled()) {
-                document.getElementById("flash-detection").innerHTML = "Yes";
-
-                // Flash is enabled, also show the version number
-
-                // Just the first bit: eg "17"
-                //document.getElementById("flash-version-detection").innerHTML = WIMB.detect.flash.version_major();
-
-                // Get everything: eg "17.0.0"
-                //document.getElementById("flash-version-detection").innerHTML = WIMB.detect.flash.version_full();
-
-                // Get a happy medium: eg "17.0"
-                document.getElementById("flash-version-detection").innerHTML = WIMB.detect.flash.version();
-            }
-            else {
-                document.getElementById("flash-detection").innerHTML = "No";
-                document.getElementById("flash-version-detection").innerHTML = "-";
-            }
-
-            // JAVA DETECTION
-            if (WIMB.detect.java.enabled()) {
-                document.getElementById("java-detection").innerHTML = "Yes";
-
-                // Java is enabled, also show the version and update number
-                
-                // This will return a decoded version (and optional update number), stored in a multidimensional array. see decode_java_version() for more info.
-                // eg:
-                // {
-                //  "version": [8, 0],
-                //  "update": 45
-                //  }
-                //console.log(WIMB.detect.java.version_array());
-
-                // Get a string: "8, update 45"
-                document.getElementById("javaversion-version-detection").innerHTML = WIMB.detect.java.version();
-
-            }
-            else {
-                document.getElementById("java-detection").innerHTML = "No";
-                document.getElementById("javaversion-detection").innerHTML = "-";
-            }
-
-            // SCREEN SIZE DETECTION
-            screen_detection = WIMB.detect.computer_screen.width() + " x " + WIMB.detect.computer_screen.height()
-            document.getElementById("screensize-detection").innerHTML = screen_detection;
-
-            // SCREEN DEPTH DETECTION
-            document.getElementById("screencolordepth-detection").innerHTML = WIMB.detect.computer_screen.color_depth() + " bit";
-            
-            // SCREEN PIXEL RATIO
-            document.getElementById("screendevicepixelratio-detection").innerHTML = WIMB.detect.computer_screen.device_pixel_ratio();
-
-            // BROWSER WINDOW SIZE
-            // This is the size of the entire browser window, including address bar, toolbars and viewport
-            // If you want this to be dynamic, you can assign a function to the browser "resize" event and update
-            // your page/data accordingly.
-            browser_window_size_detection = WIMB.detect.browser_window_size.width() + " x " + WIMB.detect.browser_window_size.height()
-            document.getElementById("browserwindowsize-detection").innerHTML = browser_window_size_detection;
-
-            // BROWSER VIEW PORT SIZE
-            // This is the size of the visible part of your web site
-            // If you want this to be dynamic, you can assign a function to the browser "resize" event and update
-            // your page/data accordingly.
-            browser_window_size_detection = WIMB.detect.browser_viewport_size.width() + " x " + WIMB.detect.browser_viewport_size.height()
-            document.getElementById("browserviewportsize-detection").innerHTML = browser_window_size_detection;
-
-            // LOCAL IP ADDRESS/ES
-            // -- Trigger detection and setTimeout() for a second or two before getting them
-            WIMB.detect.local_ipv4_addresses.trigger_detection();
-            document.getElementById("localips-detection").innerHTML = "Checking...";
-            setTimeout(function() {
-                // Local IPv4 Address (if supported)
-                var local_ipv4_addresses = WIMB.detect.local_ipv4_addresses.retrieve();
-                if (local_ipv4_addresses.length > 0) {
-
-                    var local_ipv4_html = "<ul>";
-
-                    for (local_ipv4_address_key in local_ipv4_addresses) {
-                        local_ipv4_html = local_ipv4_html + '<li>' + local_ipv4_addresses[local_ipv4_address_key] + '</li>';
-                    }
-                    //local_ipv4_html = '<li>' + local_ipv4_html + '</li>';
-
-                    local_ipv4_html = local_ipv4_html + '</ul>';
-
-                    document.getElementById("localips-detection").innerHTML = local_ipv4_html;
-                }
-            }, 1000);
-
-            // GMT offset
-            document.getElementById("gmtoffset-detection").innerHTML = WIMB.detect.gmt_offset();
-
-            // Adblock
-            // Depending on the speed of your customer's computer, complexity of your page,
-            // speed of their internet connection and other factors, it's usually necessary to
-            // introduce a very short delay before checking if an adblocker is installed.
-            // It seems anything less than 500 milliseconds definitely introduces inconsistencies, 
-            // but you should experiment with this value yourself, depending on the complexity of
-            // your site, etc.
-            // The setTimeout() will wait 500 milliseconds (half a second) before checking
-            // if an adblocker is running/enabled.
-            document.getElementById("adblock-detection").innerHTML = "";
-            setTimeout(function() {
-                if (WIMB.detect.addons.adblock.enabled()) {
-                    document.getElementById("adblock-detection").innerHTML = "Yes";
-                }
-                else {
-                    document.getElementById("adblock-detection").innerHTML = "No";
-                }
-            }, 500);
-
-            // -- show the version number of the javascript library
-            document.getElementById("library-version").innerHTML = WIMB.version;
-
-        </script>
-
-        <footer>
-            <hr />
-            <p><a href="https://www.whatismybrowser.com">WhatIsMyBrowser.com Developers</a> - 2020</p>
-        </footer>
-    </body>
 </html>
