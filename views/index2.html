@@ -32,8 +32,10 @@
         sessionStorage.setItem("timeStamp", Date.now());
         console.log(sessionStorage.getItem("timeStamp"))
         document.getElementById("result").innerHTML = sessionStorage.getItem("timeStamp");
+        
     }
     catch (err) {
+        window.parent.postMessage("HELLO_PARENT", 'https://checksessionstoragedomain-1.herokuapp.com/')
         document.getElementById("result").innerHTML = "An Error Occured: "+ err;
     }
 
