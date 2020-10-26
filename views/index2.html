@@ -27,6 +27,15 @@
 </body>
 
 <script>
+     window.addEventListener('message', handleMessage, false);
+     function handleMessage(event) {  
+     if (event.origin != "https://checksessionstoragedomain-2.herokuapp.com/") { return; }  
+     switch(event.data) {   
+          case "HELLO_PARENT":  
+             alert("Recieved session storage failure event");  
+             break;  
+     } 
+ }
 </script>
 </body>
 
