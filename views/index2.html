@@ -27,9 +27,15 @@
 </body>
 
 <script>
-    sessionStorage.setItem("timeStamp", Date.now());
-    console.log(sessionStorage.getItem("timeStamp"))
-    document.getElementById("result").innerHTML = sessionStorage.getItem("timeStamp");
+    try {
+
+        sessionStorage.setItem("timeStamp", Date.now());
+        console.log(sessionStorage.getItem("timeStamp"))
+        document.getElementById("result").innerHTML = sessionStorage.getItem("timeStamp");
+    }
+    catch (err) {
+        document.getElementById("result").innerHTML = "An Error Occured: "+ err;
+    }
 
 </script>
 </body>
